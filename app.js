@@ -97,14 +97,14 @@ const moveTaskToTodo = function () {
 
 addButton.addEventListener('click', addTask);
 
-const bindTaskEvents = function (taskItem, checkBoxEventHandler) {
+const bindTaskEvents = function (taskItem, checkboxChangeHandler) {
   const checkbox = taskItem.querySelector('.todo-app__checkbox');
   const editButton = taskItem.querySelector('.todo-app__button--edit');
   const deleteButton = taskItem.querySelector('.todo-app__button--delete');
 
   editButton.onclick = editTask;
   deleteButton.onclick = deleteTask;
-  checkbox.onchange = checkBoxEventHandler;
+  checkbox.onchange = checkboxChangeHandler;
 };
 
 for (let i = 0; i < todoList.children.length; i++) {
