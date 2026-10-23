@@ -53,7 +53,7 @@ const addTask = function () {
   const listItem = createNewTaskElement(taskInput.value);
 
   todoList.appendChild(listItem);
-  bindTaskEvents(listItem, moveTaskToCompleted);
+  bindTaskEvents(listItem, handleTaskCompletionChange);
 
   taskInput.value = '';
 };
@@ -83,16 +83,15 @@ const deleteTask = function () {
   taskList.removeChild(listItem);
 };
 
-const moveTaskToCompleted = function () {
+const handleTaskCompletionChange = function () {
   const listItem = this.parentNode;
-  completedList.appendChild(listItem);
-  bindTaskEvents(listItem, moveTaskToTodo);
-};
+  if (this.checked) {
+    completedList.appendChild(listItem);
+  } else {
+    todoList.appendChild(listItem);
+  }
 
-const moveTaskToTodo = function () {
-  const listItem = this.parentNode;
-  todoList.appendChild(listItem);
-  bindTaskEvents(listItem, moveTaskToCompleted);
+  bindTaskEvents(listItem, handleTaskCompletionChange);
 };
 
 addButton.addEventListener('click', addTask);
@@ -108,9 +107,9 @@ const bindTaskEvents = function (taskItem, checkboxChangeHandler) {
 };
 
 for (let i = 0; i < todoList.children.length; i++) {
-  bindTaskEvents(todoList.children[i], moveTaskToCompleted);
+  bindTaskEvents(todoList.children[i], handleTaskCompletionChange);
 }
 
 for (let i = 0; i < completedList.children.length; i++) {
-  bindTaskEvents(completedList.children[i], moveTaskToTodo);
+  bindTaskEvents(completedList.children[i], handleTaskCompletionChange);
 }
