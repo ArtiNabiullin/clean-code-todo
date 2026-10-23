@@ -1,13 +1,13 @@
 const taskInput = document.getElementById('new-task');
 const addButton = document.querySelector('.todo-app__button--add');
-const incompleteTaskHolder = document.getElementById('incomplete-tasks');
-const completedTasksHolder = document.getElementById('completed-tasks');
+const todoList = document.getElementById('incomplete-tasks');
+const completedList = document.getElementById('completed-tasks');
 
 const createNewTaskElement = function (taskString) {
   const listItem = document.createElement('li');
   listItem.className = 'todo-app__item';
 
-  const checkBox = document.createElement('input');
+  const checkbox = document.createElement('input');
 
   const label = document.createElement('label');
 
@@ -20,9 +20,9 @@ const createNewTaskElement = function (taskString) {
   label.innerText = taskString;
   label.className = 'todo-app__task-label';
 
-  checkBox.type = 'checkbox';
-  checkBox.className = 'todo-app__checkbox';
-  checkBox.setAttribute('aria-label', 'Mark task completed');
+  checkbox.type = 'checkbox';
+  checkbox.className = 'todo-app__checkbox';
+  checkbox.setAttribute('aria-label', 'Mark task completed');
 
   editInput.type = 'text';
   editInput.className = 'todo-app__edit-input';
@@ -40,7 +40,7 @@ const createNewTaskElement = function (taskString) {
   deleteButtonImg.alt = '';
   deleteButton.appendChild(deleteButtonImg);
 
-  listItem.appendChild(checkBox);
+  listItem.appendChild(checkbox);
   listItem.appendChild(label);
   listItem.appendChild(editInput);
   listItem.appendChild(editButton);
@@ -52,8 +52,8 @@ const addTask = function () {
   if (!taskInput.value) return;
   const listItem = createNewTaskElement(taskInput.value);
 
-  incompleteTaskHolder.appendChild(listItem);
-  bindTaskEvents(listItem, taskCompleted);
+  todoList.appendChild(listItem);
+  bindTaskEvents(listItem, moveTaskToCompleted);
 
   taskInput.value = '';
 };
@@ -63,15 +63,15 @@ const editTask = function () {
 
   const editInput = listItem.querySelector('.todo-app__edit-input');
   const label = listItem.querySelector('label');
-  const editBtn = listItem.querySelector('.todo-app__button--edit');
-  const containsClass = listItem.classList.contains('todo-app__item--editing');
+  const editButton = listItem.querySelector('.todo-app__button--edit');
+  const isEditing = listItem.classList.contains('todo-app__item--editing');
 
-  if (containsClass) {
+  if (isEditing) {
     label.innerText = editInput.value;
-    editBtn.innerText = 'Edit';
+    editButton.innerText = 'Edit';
   } else {
     editInput.value = label.innerText;
-    editBtn.innerText = 'Save';
+    editButton.innerText = 'Save';
   }
 
   listItem.classList.toggle('todo-app__item--editing');
@@ -79,38 +79,38 @@ const editTask = function () {
 
 const deleteTask = function () {
   const listItem = this.parentNode;
-  const ul = listItem.parentNode;
-  ul.removeChild(listItem);
+  const taskList = listItem.parentNode;
+  taskList.removeChild(listItem);
 };
 
-const taskCompleted = function () {
+const moveTaskToCompleted = function () {
   const listItem = this.parentNode;
-  completedTasksHolder.appendChild(listItem);
-  bindTaskEvents(listItem, taskIncomplete);
+  completedList.appendChild(listItem);
+  bindTaskEvents(listItem, moveTaskToTodo);
 };
 
-const taskIncomplete = function () {
+const moveTaskToTodo = function () {
   const listItem = this.parentNode;
-  incompleteTaskHolder.appendChild(listItem);
-  bindTaskEvents(listItem, taskCompleted);
+  todoList.appendChild(listItem);
+  bindTaskEvents(listItem, moveTaskToCompleted);
 };
 
 addButton.addEventListener('click', addTask);
 
-const bindTaskEvents = function (taskListItem, checkBoxEventHandler) {
-  const checkBox = taskListItem.querySelector('.todo-app__checkbox');
-  const editButton = taskListItem.querySelector('.todo-app__button--edit');
-  const deleteButton = taskListItem.querySelector('.todo-app__button--delete');
+const bindTaskEvents = function (taskItem, checkBoxEventHandler) {
+  const checkbox = taskItem.querySelector('.todo-app__checkbox');
+  const editButton = taskItem.querySelector('.todo-app__button--edit');
+  const deleteButton = taskItem.querySelector('.todo-app__button--delete');
 
   editButton.onclick = editTask;
   deleteButton.onclick = deleteTask;
-  checkBox.onchange = checkBoxEventHandler;
+  checkbox.onchange = checkBoxEventHandler;
 };
 
-for (let i = 0; i < incompleteTaskHolder.children.length; i++) {
-  bindTaskEvents(incompleteTaskHolder.children[i], taskCompleted);
+for (let i = 0; i < todoList.children.length; i++) {
+  bindTaskEvents(todoList.children[i], moveTaskToCompleted);
 }
 
-for (let i = 0; i < completedTasksHolder.children.length; i++) {
-  bindTaskEvents(completedTasksHolder.children[i], taskIncomplete);
+for (let i = 0; i < completedList.children.length; i++) {
+  bindTaskEvents(completedList.children[i], moveTaskToTodo);
 }
